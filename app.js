@@ -33,6 +33,7 @@ const oklaomaImageMap = {
   "-1,1": document.querySelector("#oklaomaSouthWestMap"),
   "-1,-1": document.querySelector("#oklaomaNorthWestMap")
 };
+
 const accountAvatar = document.querySelector("#accountAvatar");
 const accountCtx = accountAvatar.getContext("2d");
 const encounterPanel = document.querySelector("#encounterPanel");
@@ -446,7 +447,87 @@ const saveFields = [
 ];
 const defaultSaveState = saveStateSnapshot();
 let currentAccountKey = null;
+const socket = window.io ? io() : null;
+const otherPlayers = {};
 
+function currentMapKey() {
+  if (state.area === "oklaoma") {
+    return `${state.oklaomaMap.x},${state.oklaomaMap.y}`;
+  }
+  return state.area;
+}
+
+function myNetworkPlayer() {
+  return {
+    name: state.playerName,
+    area: state.area,
+    mapKey: currentMapKey(),
+    x: state.player.x,
+    y: state.player.y,
+    skin: state.skin || 0,
+    classKey: state.chosenClassKey || null
+  };
+}
+
+function sendPlayerUpdate() {
+  if (!socket || !currentAccountKey) return;
+  socket.emit("player:update", myNetworkPlayer());
+}
+
+function drawOtherPlayers() {
+  Object.values(otherPlayers).forEach((player) => {
+    if (player.area !== state.area) return;
+    if (player.mapKey !== currentMapKey()) return;
+
+    const pos = tileToPx(player.x, player.y);
+    const sprite = state.sprites[0];
+
+    ctx.save();
+
+    if (sprite) {
+      ctx.drawImage(sprite, pos.x + 6, pos.y - 8, map.tile - 12, map.tile + 6);
+    } else {
+      ctx.fillStyle = "#2e75d4";
+      ctx.beginPath();
+      ctx.arc(pos.x + map.tile / 2, pos.y + map.tile / 2, map.tile / 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.fillStyle = "#fff8da";
+    ctx.strokeStyle = "#35291f";
+    ctx.lineWidth = 3;
+    ctx.font = "bold 12px Arial";
+    ctx.textAlign = "center";
+    ctx.strokeText(player.name || "Joueur", pos.x + map.tile / 2, pos.y - 4);
+    ctx.fillText(player.name || "Joueur", pos.x + map.tile / 2, pos.y - 4);
+
+    ctx.restore();
+  });
+}
+
+if (socket) {
+  socket.on("players:init", (players) => {
+    Object.keys(players).forEach((id) => {
+      if (id !== socket.id) otherPlayers[id] = players[id];
+    });
+    draw();
+  });
+
+  socket.on("player:joined", (player) => {
+    if (player.id !== socket.id) otherPlayers[player.id] = player;
+    draw();
+  });
+
+  socket.on("player:updated", (player) => {
+    if (player.id !== socket.id) otherPlayers[player.id] = player;
+    draw();
+  });
+
+  socket.on("player:left", (id) => {
+    delete otherPlayers[id];
+    draw();
+  });
+}
 function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
 }
