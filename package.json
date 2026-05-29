@@ -1,0 +1,16 @@
+{
+  "name": "royaumes-daldoria",
+  "version": "1.0.0",
+  "description": "MMORPG medieval fantastique",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  }
+}
