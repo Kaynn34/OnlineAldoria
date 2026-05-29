@@ -5,6 +5,10 @@ const path = require("path");
 const root = __dirname;
 const port = Number(process.env.PORT || 4173);
 
+const { Server } = require("socket.io");
+const io = new Server(server);
+io.on("connection", (socket) => {
+
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
