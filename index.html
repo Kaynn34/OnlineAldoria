@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Royaumes d'Aldoria - Prototype</title>
+    <link rel="stylesheet" href="styles.css?v=20260528-dialog-npc-shift1">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="welcome-copy">
+        <div class="brand">
+          <div class="logo-mark" aria-hidden="true">A</div>
+          <div>
+            <p class="kicker">MMORPG medieval fantastique</p>
+            <h1>Royaumes d'Aldoria</h1>
+          </div>
+        </div>
+        <p class="welcome-text">Entre dans les terres d'Aldoria, cree ton personnage et reprends ta progression quand tu veux.</p>
+      </div>
+
+      <form class="login-form" id="loginForm">
+        <strong>Acces au jeu</strong>
+        <input id="loginName" name="name" type="text" placeholder="Pseudo" aria-label="Nom du personnage" autocomplete="username">
+        <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="current-password">
+        <button type="submit">Connexion</button>
+        <button type="button" id="createAccountButton">Creer</button>
+        <small id="loginStatus" aria-live="polite"></small>
+      </form>
+    </header>
+
+    <main class="game-shell">
+      <aside class="left-panel" aria-label="Menu joueur">
+        <section class="account-card is-hidden" id="accountCard">
+          <canvas id="accountAvatar" width="96" height="96"></canvas>
+          <div>
+            <strong id="accountName">Testeur d'Aldoria</strong>
+            <span id="accountLevel">Niveau 1</span>
+            <span id="coords">carte x 3, y 4</span>
+          </div>
+        </section>
+
+        <section class="stats-panel">
+          <div><span>PA</span><b id="paValue">999</b></div>
+          <div><span>PM</span><b id="pmValue">999</b></div>
+          <div><span>Or</span><b id="goldValue">34</b></div>
+        </section>
+
+        <nav class="game-tabs" aria-label="Menus personnage">
+          <button type="button" data-game-menu="profile" aria-label="Profil" title="Profil">Profil</button>
+          <button type="button" data-game-menu="inventory" aria-label="Inventaire" title="Inventaire">Inventaire</button>
+          <button type="button" data-game-menu="skills" aria-label="Competences" title="Competences">Competences</button>
+          <button type="button" data-game-menu="map" aria-label="Carte" title="Carte">Carte</button>
+          <button type="button" data-game-menu="quests" aria-label="Quetes" title="Quetes">Quetes</button>
+        </nav>
+
+        <section class="hp-panel">
+          <div class="section-title">
+            <h2>Vie</h2>
+            <span><b id="hpValue">100</b> PV</span>
+          </div>
+          <div class="hp-bar"><i id="playerHpBar"></i></div>
+        </section>
+
+        <section class="xp-panel">
+          <span id="heroLevel" class="sr-only">Niveau 1</span>
+          <div class="xp-bar"><i id="xpBar"></i></div>
+          <small id="heroXp" class="sr-only">0 / 60 XP</small>
+        </section>
+      </aside>
+
+      <section class="game-area" aria-label="Carte de jeu">
+        <div class="topbar">
+          <div>
+            <p class="kicker">Zone de depart</p>
+            <h2 id="areaTitle">Frontiere de Valombre</h2>
+          </div>
+          <button type="button" id="logoutButton">Deconnexion</button>
+
+          <section class="quest-panel">
+            <div class="section-title">
+              <h2>Quete</h2>
+              <span id="questState">A prendre</span>
+            </div>
+            <p id="questText">Entre dans le grand batiment et parle au Vieux sage.</p>
+          </section>
+
+          <section class="chat-panel">
+            <ol class="log" id="log"></ol>
+          </section>
+
+          <div class="hero-summary">
+            <span id="heroName">Aventurier de Valombre</span>
+            <small id="heroClass">Skin universel jusqu'au niveau 5</small>
+          </div>
+        </div>
+
+        <section class="game-menu-panel is-hidden" id="gameMenuPanel" aria-label="Menu personnage">
+          <div class="game-menu-head">
+            <div>
+              <p class="kicker" id="gameMenuKicker">Personnage</p>
+              <h2 id="gameMenuTitle">Profil</h2>
+            </div>
+            <button type="button" id="gameMenuClose">Fermer</button>
+          </div>
+
+          <div class="game-menu-section" data-game-section="profile">
+            <div class="profile-overview">
+              <canvas id="menuAvatar" width="96" height="128"></canvas>
+              <div>
+                <h3 id="profileName">Testeur d'Aldoria</h3>
+                <p id="profileMeta">Niveau 1 - Aventurier</p>
+                <div class="profile-meter"><span>Experience</span><div class="xp-bar"><i id="profileXpBar"></i></div><small id="profileXpText">0 / 60 XP</small></div>
+                <div class="profile-meter"><span>Vie</span><div class="hp-bar"><i id="profileHpBar"></i></div><small id="profileHpText">100 / 100 PV</small></div>
+              </div>
+            </div>
+            <div class="section-title">
+              <h2>Caracteristiques</h2>
+              <span id="statPoints">0 pts</span>
+            </div>
+            <div class="stat-list" id="statList"></div>
+          </div>
+
+          <div class="game-menu-section is-hidden" data-game-section="inventory">
+            <div class="inventory-layout">
+              <div class="paper-doll">
+                <canvas id="inventoryAvatar" width="120" height="150"></canvas>
+                <div class="gear-slots" id="gearSlots"></div>
+              </div>
+              <div>
+                <div class="section-title">
+                  <h2>Sac</h2>
+                  <span id="inventoryGold">34 or</span>
+                </div>
+                <div class="inventory-grid" id="inventoryGrid"></div>
+                <p id="inventoryText" class="inventory-note">Aucun objet de quete.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="game-menu-section is-hidden" data-game-section="skills">
+            <div class="section-title">
+              <h2>Competences</h2>
+              <span id="skillPoints">0 pts</span>
+            </div>
+            <div class="skill-upgrade-list" id="skillUpgradeList"></div>
+          </div>
+
+          <div class="game-menu-section is-hidden" data-game-section="quests">
+            <div class="section-title">
+              <h2>Journal de quetes</h2>
+              <span id="questJournalCount">0 active</span>
+            </div>
+            <div class="quest-journal" id="questJournal"></div>
+          </div>
+        </section>
+
+        <div class="play-stack">
+          <div class="canvas-wrap">
+            <canvas id="gameCanvas" width="980" height="700" aria-label="Carte medievale en cases"></canvas>
+            <div class="encounter-panel is-hidden" id="encounterPanel">
+              <canvas id="encounterAvatar" width="56" height="56"></canvas>
+              <div>
+                <strong id="encounterName">Sanglier sombre</strong>
+                <span id="encounterCount">1 monstre sur cette case</span>
+                <div class="hp-bar"><i id="encounterHpBar"></i></div>
+                <small id="encounterHpText">PV: -- / --</small>
+              </div>
+            </div>
+            <div class="dialog-panel is-hidden" id="dialogPanel">
+              <canvas id="dialogAvatar" width="96" height="96"></canvas>
+              <strong id="dialogName">Vieux sage</strong>
+              <p id="dialogText">...</p>
+              <div class="dialog-actions" id="dialogActions"></div>
+            </div>
+            <div class="floating-combat-log" id="floatingCombatLog"></div>
+          </div>
+
+          <section class="bottom-dock">
+            <div class="skill-zone">
+              <div class="section-title">
+                <h2>Competences</h2>
+                <span id="skillHint">Niveau 1</span>
+              </div>
+              <div class="skill-list" id="skillList"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <img id="skinSheet" src="assets/aldoria-rounded-universal-sprites-transparent.png" alt="" hidden>
+    <img id="classSheet" src="assets/aldoria-class-sprites-v2-transparent.png" alt="" hidden>
+    <img id="menuSheet" src="assets/menu.png" alt="" hidden>
+    <img id="menuIconBag" src="assets/icon-bag.png" alt="" hidden>
+    <img id="menuIconBook" src="assets/icon-book.png" alt="" hidden>
+    <img id="menuIconGrimoire" src="assets/icon-grimoire.png" alt="" hidden>
+    <img id="skillSheet" src="assets/aldoria-skill-icons.png" alt="" hidden>
+    <img id="npcSheet" src="assets/aldroia-skin-pnj-transparent.png" alt="" hidden>
+    <img id="mapArt" src="assets/aldoria-detailed-layout-map.png" alt="" hidden>
+    <img id="oklaomaCentralMap" src="assets/oklaoma-central-map.png" alt="" hidden>
+    <img id="oklaomaNorthMap" src="assets/oklaoma-north.png" alt="" hidden>
+    <img id="oklaomaEastMap" src="assets/oklaoma-east.png" alt="" hidden>
+    <img id="oklaomaSouthMap" src="assets/oklaoma-south.png" alt="" hidden>
+    <img id="oklaomaWestMap" src="assets/oklaoma-west.png" alt="" hidden>
+    <img id="oklaomaNorthEastMap" src="assets/oklaoma-northeast.png" alt="" hidden>
+    <img id="oklaomaSouthEastMap" src="assets/oklaoma-southeast.png" alt="" hidden>
+    <img id="oklaomaSouthWestMap" src="assets/oklaoma-southwest.png" alt="" hidden>
+    <img id="oklaomaNorthWestMap" src="assets/oklaoma-northwest.png" alt="" hidden>
+    <img id="oklaomaInteriorSheet" src="assets/oklaoma-interiors-v2.png" alt="" hidden>
+    <img id="oklaomaMonsterSheet" src="assets/oklaoma-monsters-v2-alpha.png" alt="" hidden>
+    <img id="equipmentSheet" src="assets/aldoria-equipment-icons.png" alt="" hidden>
+    <img id="oklaomaAtlas" src="assets/oklaoma-map-atlas-wide.png" alt="" hidden>
+    <script src="app.js?v=20260528-dialog-npc-shift1"></script>
+  </body>
+</html>
